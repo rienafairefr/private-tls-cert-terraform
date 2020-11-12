@@ -20,11 +20,6 @@ resource "tls_self_signed_cert" "ca" {
     common_name  = var.ca_common_name
     organization = var.organization_name
   }
-
-  # Store the CA public key in a file.
-  provisioner "local-exec" {
-    command = "echo '${tls_self_signed_cert.ca.cert_pem}' > '${var.ca_public_key_file_path}' && chmod ${var.permissions} '${var.ca_public_key_file_path}' && chown $USER '${var.ca_public_key_file_path}'"
-  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -35,11 +30,6 @@ resource "tls_private_key" "cert" {
   algorithm   = var.private_key_algorithm
   ecdsa_curve = var.private_key_ecdsa_curve
   rsa_bits    = var.private_key_rsa_bits
-
-  # Store the certificate's private key in a file.
-  provisioner "local-exec" {
-    command = "echo '${tls_private_key.cert.private_key_pem}' > '${var.private_key_file_path}' && chmod ${var.permissions} '${var.private_key_file_path}' && chown $USER '${var.private_key_file_path}'"
-  }
 }
 
 resource "tls_cert_request" "cert" {
@@ -64,9 +54,8 @@ resource "tls_locally_signed_cert" "cert" {
 
   validity_period_hours = var.validity_period_hours
   allowed_uses          = var.allowed_uses
+}
 
-  # Store the certificate's public key in a file.
-  provisioner "local-exec" {
-    command = "echo '${tls_locally_signed_cert.cert.cert_pem}' > '${var.public_key_file_path}' && chmod ${var.permissions} '${var.public_key_file_path}' && chown $USER '${var.public_key_file_path}'"
-  }
+output "tls_locally_signed_cert_pem" {
+  value = tls_locally_signed_cert.cert.cert_pem
 }

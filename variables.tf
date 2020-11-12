@@ -18,11 +18,6 @@ variable "private_key_file_path" {
   default = "tls/vault.key.pem" 
 }
 
-variable "owner" {
-  description = "The OS user who should be given ownership over the certificate files."
-  default = "ki.hong"
-}
-
 variable "organization_name" {
   description = "The name of the organization to associate with the certificates (e.g. Acme Co)."
   default = "bogotobogo"
